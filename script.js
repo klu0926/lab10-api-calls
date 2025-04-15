@@ -1,7 +1,8 @@
 import { notification } from "./notification.js"
 
 const api = 'https://jsonplaceholder.typicode.com/posts/'
-
+// for error testing
+const fakeApi = 'https://jsonplaceholder.typicode.com/postsfake/' 
 
 async function fetchPost(id = 1) {
   try {
@@ -19,7 +20,7 @@ async function fetchPost(id = 1) {
 function XHRfetchPOST(id = 2) {
   console.log('XHR fetching post...')
   const xhr = new XMLHttpRequest()
-  xhr.open('GET', api + id, true) // true = async
+  xhr.open('GET', fakeApi + id, true) // true = async
 
   xhr.onload = function () {
     // 4: complete
@@ -34,10 +35,15 @@ function XHRfetchPOST(id = 2) {
         renderPost(data)
       } else {
         // if not 200 means there is an error
-        console.error('[ERROR] fetchPOSTXHR :', xhr.statusText)
-        notification(xhr.statusText)
+        console.error('[XHR ERROR] status :', xhr.status)
+        notification(`[XHR ERROR] status : ${xhr.status}`)
       }
     }
+  }
+
+  xhr.onerror = function () {
+    console.error('[XHR ERROR] status :', xhr.status)
+    notification(`[XHR ERROR] status : ${xhr.status}`)
   }
 
   // send XHR request
