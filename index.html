@@ -4,15 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lab10 API Calls</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
   </head>
   <body>
     <div class="main">
       <h1>API CALLS</h1>
+      <!-- fetch buttons -->
       <div class="fetch-buttons">
-        <button>Fetch Data with fetch()</button>
-        <button>Fetch Data with XHR</button>
+        <button id="btn-fetch" type="button">Fetch Data with fetch()</button>
+        <button id="btn-fetch-xhr" type="button">Fetch Data with XHR</button>
       </div>
+      <!-- fetch display -->
       <div class="fetch-display" id="fetch-display"></div>
+      <!-- post / put form -->
       <form id="post-form" action="" method="post">
         <input type="text" placeholder="text..." />
         <button type="submit">Submit</button>
