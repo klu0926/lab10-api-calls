@@ -287,7 +287,6 @@ async function onMethodSelect(e) {
 }
 
 function fillForm(data) {
-  console.log('fillForm :', data)
   const titleInput = document.querySelector('#post-form-title')
   const bodyInput = document.querySelector('#post-form-body')
 
