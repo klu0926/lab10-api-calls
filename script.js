@@ -1,3 +1,5 @@
+import { notification } from "./notification.js"
+
 const api = 'https://jsonplaceholder.typicode.com/posts/'
 
 
@@ -6,14 +8,12 @@ async function fetchPost(id = 1) {
     console.log('fetching post...')
     const res = await fetch(api + id)
     const data = await res.json()
-
     console.log('fetched post:', data)
     return data
   } catch (err) {
     console.error('[ERROR] fetchPOst:', err)
   }
 }
-
 
 function renderPost(post) {
   try {
@@ -23,11 +23,6 @@ function renderPost(post) {
     fetchDisplay.innerHTML = ''
 
     // create new content
-    const idDisplay = document.createElement('p')
-    idDisplay.id = 'id-display'
-    idDisplay.innerText = post.id || '?'
-    fetchDisplay.appendChild(idDisplay)
-
     const titleDisplay = document.createElement('p')
     titleDisplay.id = 'title-display'
     titleDisplay.innerText = post.title || 'No Title'
@@ -55,7 +50,11 @@ async function onFetchPostPress() {
 document.addEventListener('DOMContentLoaded', () => {
   const fetchBtn = document.querySelector('#btn-fetch')
   const fetchXHRBtn = document.querySelector('#btn-fetch-xhr')
-
-  console.log('btn-fetch', fetchBtn)
   fetchBtn.addEventListener('click', onFetchPostPress)
+
+
+  // notification
+  notification('hello world')
 })
+
+
