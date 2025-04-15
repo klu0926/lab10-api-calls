@@ -8,10 +8,8 @@ let _method = 'POST'
 // method: GET
 async function GETPost(id = 1) {
   try {
-    console.log('fetching post...')
     const res = await fetch(api + id)
     const data = await res.json()
-    console.log('fetched post:', data)
     return data
   } catch (err) {
     console.error('[ERROR] fetchPOst:', err)
@@ -20,7 +18,6 @@ async function GETPost(id = 1) {
 }
 
 function XHRGETPost(id = 2) {
-  console.log('XHR GET post...')
   const xhr = new XMLHttpRequest()
   xhr.open('GET', api + id, true) // true = async
 
@@ -31,7 +28,6 @@ function XHRGETPost(id = 2) {
       if (xhr.status === 200) {
         // parse data
         const data = JSON.parse(xhr.responseText)
-        console.log('XHR GET post:', data)
 
         // render post
         renderGETPost(data)
@@ -53,7 +49,6 @@ function XHRGETPost(id = 2) {
 // method: POST
 async function POSTpost(title = 'title', body = '') {
   try {
-    console.log('Posting new post...')
     const res = await fetch(api, {
       method: 'POST',
       headers: {
@@ -67,9 +62,7 @@ async function POSTpost(title = 'title', body = '') {
     if (!res.ok) {
       throw new Error(`HTTP status: ${res.status}`)
     }
-
     const data = await res.json()
-    console.log('Post created:', data)
 
     // complete
     notification(`Post successfully created.`, false)
@@ -81,7 +74,7 @@ async function POSTpost(title = 'title', body = '') {
 }
 
 // XHR PUT
-function XHRPUTPost(putData = {}) {
+function XHRPUTPost(putData) {
   if (putData.id === undefined) {
     console.error('[XHR PUT ERROR] Missing post ID')
     notification(`[XHR PUT ERROR] Missing post ID`)
@@ -90,9 +83,7 @@ function XHRPUTPost(putData = {}) {
 
   const xhr = new XMLHttpRequest()
   const url = api + putData.id
-  xhr.open('GET', url, true) // true = async
-
-  console.log('XHR PUT post to:', url)
+  xhr.open('PUT', url, true) // true = async
 
   // add header to json
   xhr.setRequestHeader('Content-Type', 'application/json')
@@ -104,10 +95,9 @@ function XHRPUTPost(putData = {}) {
       if (xhr.status === 200) {
         // parse data
         const data = JSON.parse(xhr.responseText)
-        console.log('Post successfully updated:', data)
 
-        // (TO DO) do something with the return data
-
+        // fill form
+        fillForm(data)
 
         // complete
         notification(`Post successfully updated.`, false)
@@ -201,6 +191,7 @@ async function UpdatePost() {
     // XML PUT (also render form with new data)
     XHRPUTPost({ id, title, body })
 
+
   } catch (err) {
     console.error('[ERROR] Submit Post:', err)
     notification(err.message)
@@ -210,13 +201,11 @@ async function UpdatePost() {
 
 // Buttons Event
 async function onFetchPostPress() {
-  console.log('onFetchPostPress')
   const post = await GETPost()
   renderGETPost(post)
 }
 
 async function onXHRFetchPostPress() {
-  console.log('onXHRFetchPostPress')
   XHRGETPost()
 }
 
@@ -298,7 +287,7 @@ async function onMethodSelect(e) {
 }
 
 function fillForm(data) {
-  console.log('fillForm:', data)
+  console.log('fillForm :', data)
   const titleInput = document.querySelector('#post-form-title')
   const bodyInput = document.querySelector('#post-form-body')
 
