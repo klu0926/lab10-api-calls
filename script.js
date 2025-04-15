@@ -12,6 +12,7 @@ async function fetchPost(id = 1) {
     return data
   } catch (err) {
     console.error('[ERROR] fetchPOst:', err)
+    notification(err.message)
   }
 }
 
@@ -35,6 +36,7 @@ function renderPost(post) {
 
   } catch (err) {
     console.error('[ERROR] renderPost:', err)
+    notification(err.message)
   }
 }
 
@@ -51,10 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const fetchBtn = document.querySelector('#btn-fetch')
   const fetchXHRBtn = document.querySelector('#btn-fetch-xhr')
   fetchBtn.addEventListener('click', onFetchPostPress)
-
-
-  // notification
-  notification('hello world')
 })
 
 

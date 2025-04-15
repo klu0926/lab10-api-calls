@@ -64,3 +64,38 @@ button:focus {
   background-color: rgb(62, 62, 62);
   scale: 0.97;
 }
+
+/* notification */
+#notification {
+  position: fixed;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  min-height: 40px;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  background-color: rgb(237, 55, 55);
+  text-align: center;
+}
+
+#notification.active {
+  display: flex;
+  animation: notification 0.4s ease-in-out;
+}
+
+@keyframes notification {
+  0% {
+    opacity: 0.5;
+    transform: translateX(-50%) translateY(-40%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0%);
+  }
+}
