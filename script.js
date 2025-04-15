@@ -3,7 +3,7 @@ import { notification } from "./notification.js"
 const api = 'https://jsonplaceholder.typicode.com/posts/'
 // for error testing
 const fakeApi = 'https://jsonplaceholder.typicode.com/postsfake/'
-
+let _method = 'POST'
 
 // method: GET
 async function GETPost(id = 1) {
@@ -142,14 +142,45 @@ async function onSubmitPress(e) {
   }
 }
 
+async function onMethodSelect(e) {
+  const createSpan = document.querySelector('#create-post')
+  const updateSpan = document.querySelector('#update-post')
+
+  if (e.target === createSpan) {
+    updateSpan.classList.remove('active')
+    createSpan.classList.remove('active')
+    createSpan.classList.add('active')
+    _method = 'POST'
+  }
+
+  if (e.target === updateSpan) {
+    createSpan.classList.remove('active')
+    updateSpan.classList.remove('active')
+    updateSpan.classList.add('active')
+    _method = 'PUT'
+  }
+
+  // form id input
+  const idInput = document.querySelector('#post-form-id')
+  idInput.disabled = (_method !== 'PUT')
+
+  // form submit button
+  const submit = document.querySelector('#form-submit')
+  submit.innerText = (_method !== 'PUT') ? 'CREATE POST' : 'UPDATE POST'
+}
+
 
 // Attach all listeners
 document.addEventListener('DOMContentLoaded', () => {
   const fetchBtn = document.querySelector('#btn-fetch')
   const fetchXHRBtn = document.querySelector('#btn-fetch-xhr')
   const form = document.querySelector('#post-form')
+  const methodSpans = document.querySelectorAll('.method-select')
+
+  console.log('methodsSpan', methodSpans)
 
   fetchBtn.addEventListener('click', onFetchPostPress)
   fetchXHRBtn.addEventListener('click', onXHRFetchPostPress)
   form.addEventListener('submit', onSubmitPress)
+  methodSpans.forEach(s => s.addEventListener('click', onMethodSelect))
 })

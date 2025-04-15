@@ -26,11 +26,26 @@
       <!-- fetch display -->
       <div class="fetch-display" id="fetch-display"></div>
       <!-- post / put form -->
-      <h3>CREATE POST</h3>
+      <h3 class="method-select-container">
+        <span class="method-select active" id="create-post">CREATE</span>
+        <span class="method-select" id="update-post">UPDATE</span>
+      </h3>
       <form id="post-form" action="" method="post">
+        <input
+          id="post-form-id"
+          type="text"
+          placeholder="ID: require to update post"
+          disabled
+        />
         <input id="post-form-title" type="text" placeholder="Title" />
-        <textarea name="" id="post-form-body" cols="30" rows="10" placeholder="Body content..."></textarea>
-        <button type="submit">Submit</button>
+        <textarea
+          name=""
+          id="post-form-body"
+          cols="30"
+          rows="10"
+          placeholder="Body content..."
+        ></textarea>
+        <button id="form-submit" type="submit">CREATE POST</button>
       </form>
     </div>
   </body>

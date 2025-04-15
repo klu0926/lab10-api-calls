@@ -78,7 +78,7 @@ button:hover,
 button:focus {
   outline: none;
   border: none;
-  scale: 1.02;
+  scale: 0.97;
 }
 
 /* form */
@@ -107,6 +107,28 @@ form textarea {
 
 form button[type='submit'] {
   width: 100%;
+}
+
+/* method select */
+.method-select-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.method-select {
+  color: gray;
+  cursor: pointer;
+}
+
+.method-select:hover{
+  scale: 0.97;
+}
+
+.method-select.active {
+  color: var(--light);
+  border-bottom: 2px solid var(--light);
 }
 
 /* notification */
