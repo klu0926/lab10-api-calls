@@ -7,7 +7,7 @@
 }
 
 :root {
-  --light: #ef4136;
+  --light: #ea5349;
   --dark: #04273f;
   --background: #f5f5f5;
 }
@@ -18,8 +18,11 @@ body {
 }
 
 h1 {
+  width: 100%;
+  text-align: center;
   font-size: 4rem;
   font-family: 'Special Gothic Condensed One', sans-serif;
+  word-spacing: 0.2em;
 }
 
 .main {
@@ -27,9 +30,10 @@ h1 {
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  padding-top: 50px;
+  padding: 50px 15px 15px 15px;
   margin: 20px auto;
   width: 500px;
+  max-width: 100%;
   height: 100vh;
   gap: 20px;
 }
@@ -60,6 +64,13 @@ h1 {
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
+}
+
+.fetch-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
 }
 
 button {
@@ -122,7 +133,7 @@ form button[type='submit'] {
   cursor: pointer;
 }
 
-.method-select:hover{
+.method-select:hover {
   scale: 0.97;
 }
 
@@ -151,12 +162,12 @@ form button[type='submit'] {
 }
 
 #notification.warning {
-  background-color: rgb(237, 55, 55);
+  background-color: rgb(227, 26, 26);
 }
 
 #notification.active {
   display: flex;
-  animation: notification 0.4s ease-in-out;
+  animation: notification 0.3s ease-out;
 }
 
 @keyframes notification {
