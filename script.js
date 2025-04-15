@@ -20,7 +20,7 @@ async function GETPost(id = 1) {
 }
 
 function XHRGETPost(id = 2) {
-  console.log('XHR fetching post...')
+  console.log('XHR GET post...')
   const xhr = new XMLHttpRequest()
   xhr.open('GET', api + id, true) // true = async
 
@@ -31,10 +31,10 @@ function XHRGETPost(id = 2) {
       if (xhr.status === 200) {
         // parse data
         const data = JSON.parse(xhr.responseText)
-        console.log('XHR fetched post:', data)
+        console.log('XHR GET post:', data)
 
         // render post
-        renderPost(data)
+        renderGETPost(data)
       } else {
         // if not 200 means there is an error
         console.error('[XHR ERROR] status :', xhr.status)
@@ -70,6 +70,8 @@ async function POSTpost(title = 'title', body = '') {
 
     const data = await res.json()
     console.log('Post created:', data)
+
+    // complete
     notification(`Post successfully created.`, false)
     return data
   } catch (err) {
@@ -78,8 +80,54 @@ async function POSTpost(title = 'title', body = '') {
   }
 }
 
+// XHR PUT
+function XHRPUTPost(putData = {}) {
+  if (putData.id === undefined) {
+    console.error('[XHR PUT ERROR] Missing post ID')
+    notification(`[XHR PUT ERROR] Missing post ID`)
+    return
+  }
 
-function renderPost(post) {
+  const xhr = new XMLHttpRequest()
+  const url = api + putData.id
+  xhr.open('GET', url, true) // true = async
+
+  console.log('XHR PUT post to:', url)
+
+  // add header to json
+  xhr.setRequestHeader('Content-Type', 'application/json')
+
+  xhr.onload = function () {
+    // 4: complete
+    if (xhr.readyState === 4) {
+      // 200 : successful
+      if (xhr.status === 200) {
+        // parse data
+        const data = JSON.parse(xhr.responseText)
+        console.log('Post successfully updated:', data)
+
+        // (TO DO) do something with the return data
+
+
+        // complete
+        notification(`Post successfully updated.`, false)
+      } else {
+        // if not 200 means there is an error
+        console.error('[XHR ERROR] status :', xhr.status)
+        notification(`[XHR ERROR] status : ${xhr.status}`)
+      }
+    }
+  }
+  xhr.onerror = function () {
+    console.error('[XHR ERROR] status :', xhr.status)
+    notification(`[XHR ERROR] status : ${xhr.status}`)
+  }
+  // send XHR request
+  xhr.send(JSON.stringify(putData))
+}
+
+
+function renderGETPost(post) {
   try {
     const fetchDisplay = document.querySelector('#fetch-display')
     if (!fetchDisplay) throw new Error('Cannot find fetch-display')
@@ -103,11 +151,68 @@ function renderPost(post) {
   }
 }
 
+
+// validate form and create post with : POSTpost()
+async function CreatePost() {
+  try {
+    const titleInput = document.querySelector('#post-form-title')
+    const bodyInput = document.querySelector('#post-form-body')
+
+    // validate
+    if (!titleInput || !bodyInput) {
+      throw new Error('Missing form inputs elements')
+    }
+    const title = titleInput.value.trim()
+    const body = bodyInput.value.trim()
+    if (title === '') throw new Error('Post Title required')
+    if (body === '') throw new Error('Post Body required')
+
+    // currenlty no use for the returning data
+    await POSTpost(title, body)
+
+    // clear form
+    clearFormInput()
+  } catch (err) {
+    console.error('[ERROR] Submit Post:', err)
+    notification(err.message)
+  }
+}
+
+// validate form and update Post with : XHRPUTPost()
+async function UpdatePost() {
+  try {
+    const idInput = document.querySelector('#post-form-id')
+    const titleInput = document.querySelector('#post-form-title')
+    const bodyInput = document.querySelector('#post-form-body')
+
+    // validate
+    if (!titleInput || !bodyInput || !idInput) {
+      throw new Error('Missing form inputs elements')
+    }
+    const id = idInput.value.trim()
+    const title = titleInput.value.trim()
+    const body = bodyInput.value.trim()
+
+    if (id === '') throw new Error('Post Id required')
+    if (title === '') throw new Error('Post Title required')
+    if (body === '') throw new Error('Post Body required')
+    if (isNaN(Number(id))) throw new Error('Post Id is not a number')
+
+    // XML PUT (also render form with new data)
+    XHRPUTPost({ id, title, body })
+
+  } catch (err) {
+    console.error('[ERROR] Submit Post:', err)
+    notification(err.message)
+  }
+}
+
+
 // Buttons Event
 async function onFetchPostPress() {
   console.log('onFetchPostPress')
   const post = await GETPost()
-  renderPost(post)
+  renderGETPost(post)
 }
 
 async function onXHRFetchPostPress() {
@@ -115,49 +220,72 @@ async function onXHRFetchPostPress() {
   XHRGETPost()
 }
 
-async function onSubmitPress(e) {
-  try {
-    e.preventDefault()
-    const titleInput = document.querySelector('#post-form-title')
-    const bodyInput = document.querySelector('#post-form-body')
+async function onSubmitClick(e) {
+  e.preventDefault()
 
-    // validate
-    if (!titleInput & !bodyInput) {
-      throw new Error('Missing form inputs elements')
+  if (_method === 'POST') {
+    CreatePost()
+  }
+
+  if (_method === 'PUT') {
+    UpdatePost()
+  }
+}
+
+async function onUpdateIdChange(e) {
+  if (_method !== 'PUT') return
+  const titleInput = document.querySelector('#post-form-title')
+  const bodyInput = document.querySelector('#post-form-body')
+
+  if (e.target.value === '') {
+    // clear form data
+    clearFormInput()
+    // disable title and body
+    titleInput.disabled = true
+    bodyInput.disabled = true
+  }
+
+  // if input is number
+  if (e.target.value !== '' && !isNaN(Number(e.target.value))) {
+    // fetch post and render form input
+    const post = await GETPost()
+    if (post) {
+      fillForm(post)
+      // enable title and body
+      titleInput.disabled = false
+      bodyInput.disabled = false
     }
-    const title = titleInput.value.trim()
-    const body = bodyInput.value.trim()
-    if (title === '') throw new Error('Post title required')
-    if (body === '') throw new Error('Post body required')
-
-    // currenlty no use for the returning data
-    await POSTpost(title, body)
-
-    // clear form
-    titleInput.value = ''
-    bodyInput.value = ''
-  } catch (err) {
-    console.error('[ERROR] Submit Post:', err)
-    notification(err.message)
   }
 }
 
 async function onMethodSelect(e) {
   const createSpan = document.querySelector('#create-post')
   const updateSpan = document.querySelector('#update-post')
+  const titleInput = document.querySelector('#post-form-title')
+  const bodyInput = document.querySelector('#post-form-body')
 
-  if (e.target === createSpan) {
+  // change to create mode
+  if (e.target === createSpan && _method === 'PUT') {
     updateSpan.classList.remove('active')
     createSpan.classList.remove('active')
     createSpan.classList.add('active')
+    // enable title and body
+    titleInput.disabled = false
+    bodyInput.disabled = false
     _method = 'POST'
+    clearFormInput()
   }
 
-  if (e.target === updateSpan) {
+  // change to update mode
+  if (e.target === updateSpan && _method === 'POST') {
     createSpan.classList.remove('active')
     updateSpan.classList.remove('active')
     updateSpan.classList.add('active')
+    // disable title and body
+    titleInput.disabled = true
+    bodyInput.disabled = true
     _method = 'PUT'
+    clearFormInput()
   }
 
   // form id input
@@ -169,6 +297,25 @@ async function onMethodSelect(e) {
   submit.innerText = (_method !== 'PUT') ? 'CREATE POST' : 'UPDATE POST'
 }
 
+function fillForm(data) {
+  console.log('fillForm:', data)
+  const titleInput = document.querySelector('#post-form-title')
+  const bodyInput = document.querySelector('#post-form-body')
+
+  if (data.title) titleInput.value = data.title
+  if (data.body) bodyInput.value = data.body
+}
+
+function clearFormInput() {
+  const idInput = document.querySelector('#post-form-id')
+  const titleInput = document.querySelector('#post-form-title')
+  const bodyInput = document.querySelector('#post-form-body')
+
+  if (idInput) idInput.value = ''
+  if (titleInput) titleInput.value = ''
+  if (bodyInput) bodyInput.value = ''
+}
+
 
 // Attach all listeners
 document.addEventListener('DOMContentLoaded', () => {
@@ -176,11 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const fetchXHRBtn = document.querySelector('#btn-fetch-xhr')
   const form = document.querySelector('#post-form')
   const methodSpans = document.querySelectorAll('.method-select')
-
-  console.log('methodsSpan', methodSpans)
+  const idInput = document.querySelector('#post-form-id')
 
   fetchBtn.addEventListener('click', onFetchPostPress)
   fetchXHRBtn.addEventListener('click', onXHRFetchPostPress)
-  form.addEventListener('submit', onSubmitPress)
+  form.addEventListener('submit', onSubmitClick)
   methodSpans.forEach(s => s.addEventListener('click', onMethodSelect))
+  idInput.addEventListener('input', onUpdateIdChange)
 })
