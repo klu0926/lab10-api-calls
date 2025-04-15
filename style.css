@@ -6,6 +6,22 @@
   box-sizing: border-box;
 }
 
+:root {
+  --light: #ef4136;
+  --dark: #04273f;
+  --background: #f5f5f5;
+}
+
+body {
+  color: var(--dark);
+  background-color: var(--background);
+}
+
+h1 {
+  font-size: 4rem;
+  font-family: 'Special Gothic Condensed One', sans-serif;
+}
+
 .main {
   display: flex;
   flex-direction: column;
@@ -47,13 +63,14 @@
 }
 
 button {
-  padding: 7px 13px;
+  padding: 12px 20px;
   color: white;
-  background-color: rgb(129, 129, 129);
+  background-color: var(--light);
   outline: none;
   border: none;
   cursor: pointer;
   border-radius: 2px;
+  text-transform: uppercase;
   transition: all 0.2s ease-in-out;
 }
 
@@ -61,8 +78,35 @@ button:hover,
 button:focus {
   outline: none;
   border: none;
-  background-color: rgb(62, 62, 62);
-  scale: 0.97;
+  scale: 1.02;
+}
+
+/* form */
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+form input {
+  width: 100%;
+  padding: 5px;
+  font-size: 1.1rem;
+  color: var(--dark);
+}
+
+form textarea {
+  width: 100%;
+  font-size: 1rem;
+  padding: 5px;
+  color: var(--dark);
+}
+
+form button[type='submit'] {
+  width: 100%;
 }
 
 /* notification */
@@ -76,12 +120,16 @@ button:focus {
   left: 50%;
   transform: translateX(-50%);
   width: 400px;
-  min-height: 40px;
+  min-height: 50px;
   border-radius: 5px;
   padding: 10px;
   color: white;
-  background-color: rgb(237, 55, 55);
+  background-color: rgb(55, 128, 237);
   text-align: center;
+}
+
+#notification.warning {
+  background-color: rgb(237, 55, 55);
 }
 
 #notification.active {

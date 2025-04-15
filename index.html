@@ -4,12 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lab10 API Calls</title>
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Special+Gothic+Condensed+One&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" type="module" defer></script>
   </head>
   <body>
     <div class="main">
       <h1>API CALLS</h1>
+      <h3>GET POST</h3>
       <!-- fetch buttons -->
       <div class="fetch-buttons">
         <button id="btn-fetch" type="button">Fetch Data with fetch()</button>
@@ -18,8 +26,10 @@
       <!-- fetch display -->
       <div class="fetch-display" id="fetch-display"></div>
       <!-- post / put form -->
+      <h3>CREATE POST</h3>
       <form id="post-form" action="" method="post">
-        <input type="text" placeholder="text..." />
+        <input id="post-form-title" type="text" placeholder="Title" />
+        <textarea name="" id="post-form-body" cols="30" rows="10" placeholder="Body content..."></textarea>
         <button type="submit">Submit</button>
       </form>
     </div>

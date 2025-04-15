@@ -2,9 +2,11 @@ import { notification } from "./notification.js"
 
 const api = 'https://jsonplaceholder.typicode.com/posts/'
 // for error testing
-const fakeApi = 'https://jsonplaceholder.typicode.com/postsfake/' 
+const fakeApi = 'https://jsonplaceholder.typicode.com/postsfake/'
 
-async function fetchPost(id = 1) {
+
+// method: GET
+async function GETPost(id = 1) {
   try {
     console.log('fetching post...')
     const res = await fetch(api + id)
@@ -17,10 +19,10 @@ async function fetchPost(id = 1) {
   }
 }
 
-function XHRfetchPOST(id = 2) {
+function XHRGETPost(id = 2) {
   console.log('XHR fetching post...')
   const xhr = new XMLHttpRequest()
-  xhr.open('GET', fakeApi + id, true) // true = async
+  xhr.open('GET', api + id, true) // true = async
 
   xhr.onload = function () {
     // 4: complete
@@ -40,14 +42,40 @@ function XHRfetchPOST(id = 2) {
       }
     }
   }
-
   xhr.onerror = function () {
     console.error('[XHR ERROR] status :', xhr.status)
     notification(`[XHR ERROR] status : ${xhr.status}`)
   }
-
   // send XHR request
   xhr.send()
+}
+
+// method: POST
+async function POSTpost(title = 'title', body = '') {
+  try {
+    console.log('Posting new post...')
+    const res = await fetch(api, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title, body
+      })
+    })
+
+    if (!res.ok) {
+      throw new Error(`HTTP status: ${res.status}`)
+    }
+
+    const data = await res.json()
+    console.log('Post created:', data)
+    notification(`Post successfully created.`, false)
+    return data
+  } catch (err) {
+    console.error('[POSTpost ERROR]', err)
+    notification('[POSTpost ERROR] : ' + err.message)
+  }
 }
 
 
@@ -78,13 +106,40 @@ function renderPost(post) {
 // Buttons Event
 async function onFetchPostPress() {
   console.log('onFetchPostPress')
-  const post = await fetchPost()
+  const post = await GETPost()
   renderPost(post)
 }
 
 async function onXHRFetchPostPress() {
   console.log('onXHRFetchPostPress')
-  XHRfetchPOST()
+  XHRGETPost()
+}
+
+async function onSubmitPress(e) {
+  try {
+    e.preventDefault()
+    const titleInput = document.querySelector('#post-form-title')
+    const bodyInput = document.querySelector('#post-form-body')
+
+    // validate
+    if (!titleInput & !bodyInput) {
+      throw new Error('Missing form inputs elements')
+    }
+    const title = titleInput.value.trim()
+    const body = bodyInput.value.trim()
+    if (title === '') throw new Error('Post title required')
+    if (body === '') throw new Error('Post body required')
+
+    // currenlty no use for the returning data
+    await POSTpost(title, body)
+
+    // clear form
+    titleInput.value = ''
+    bodyInput.value = ''
+  } catch (err) {
+    console.error('[ERROR] Submit Post:', err)
+    notification(err.message)
+  }
 }
 
 
@@ -92,9 +147,9 @@ async function onXHRFetchPostPress() {
 document.addEventListener('DOMContentLoaded', () => {
   const fetchBtn = document.querySelector('#btn-fetch')
   const fetchXHRBtn = document.querySelector('#btn-fetch-xhr')
+  const form = document.querySelector('#post-form')
 
   fetchBtn.addEventListener('click', onFetchPostPress)
   fetchXHRBtn.addEventListener('click', onXHRFetchPostPress)
+  form.addEventListener('submit', onSubmitPress)
 })
-
-
