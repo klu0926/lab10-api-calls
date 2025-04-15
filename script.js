@@ -16,6 +16,35 @@ async function fetchPost(id = 1) {
   }
 }
 
+function XHRfetchPOST(id = 2) {
+  console.log('XHR fetching post...')
+  const xhr = new XMLHttpRequest()
+  xhr.open('GET', api + id, true) // true = async
+
+  xhr.onload = function () {
+    // 4: complete
+    if (xhr.readyState === 4) {
+      // 200 : successful
+      if (xhr.status === 200) {
+        // parse data
+        const data = JSON.parse(xhr.responseText)
+        console.log('XHR fetched post:', data)
+
+        // render post
+        renderPost(data)
+      } else {
+        // if not 200 means there is an error
+        console.error('[ERROR] fetchPOSTXHR :', xhr.statusText)
+        notification(xhr.statusText)
+      }
+    }
+  }
+
+  // send XHR request
+  xhr.send()
+}
+
+
 function renderPost(post) {
   try {
     const fetchDisplay = document.querySelector('#fetch-display')
@@ -47,12 +76,19 @@ async function onFetchPostPress() {
   renderPost(post)
 }
 
+async function onXHRFetchPostPress() {
+  console.log('onXHRFetchPostPress')
+  XHRfetchPOST()
+}
+
 
 // Attach all listeners
 document.addEventListener('DOMContentLoaded', () => {
   const fetchBtn = document.querySelector('#btn-fetch')
   const fetchXHRBtn = document.querySelector('#btn-fetch-xhr')
+
   fetchBtn.addEventListener('click', onFetchPostPress)
+  fetchXHRBtn.addEventListener('click', onXHRFetchPostPress)
 })
 
 
